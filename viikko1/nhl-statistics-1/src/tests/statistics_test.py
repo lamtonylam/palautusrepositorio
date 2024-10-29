@@ -1,5 +1,5 @@
 import unittest
-from statistics_service import StatisticsService
+from statistics_service import StatisticsService, SortBy
 from player import Player
 
 
@@ -45,8 +45,8 @@ class TestStatisticsService(unittest.TestCase):
 
         self.assertEqual(players_of_team_str, player_list_to_test)
 
-    # find top players
-    def test_top_player(self):
+    # find top players without SORTBY, testing that it returns top point getters default
+    def test_top_point(self):
         top_players = self.stats.top(1)
 
         top_players_str = []
@@ -57,6 +57,54 @@ class TestStatisticsService(unittest.TestCase):
         top_list_to_test = [
             "Gretzky EDM 35 + 89 = 124",
             "Lemieux PIT 45 + 54 = 99",
+        ]
+
+        self.assertEqual(top_players_str, top_list_to_test)
+
+    # find top point getters
+    def test_SORTBY_points(self):
+        top_players = self.stats.top(1, SortBy.POINTS)
+
+        top_players_str = []
+        for player in top_players:
+            top_players_str.append(str(player))
+        print(top_players_str)
+
+        top_list_to_test = [
+            "Gretzky EDM 35 + 89 = 124",
+            "Lemieux PIT 45 + 54 = 99",
+        ]
+
+        self.assertEqual(top_players_str, top_list_to_test)
+
+    # find top goal scorers
+    def test_SORTBY_goals(self):
+        top_players = self.stats.top(1, SortBy.GOALS)
+
+        top_players_str = []
+        for player in top_players:
+            top_players_str.append(str(player))
+        print(top_players_str)
+
+        top_list_to_test = [
+            "Lemieux PIT 45 + 54 = 99",
+            "Yzerman DET 42 + 56 = 98",
+        ]
+
+        self.assertEqual(top_players_str, top_list_to_test)
+
+    # find top assist getters
+    def test_SORTBY_assists(self):
+        top_players = self.stats.top(1, SortBy.ASSISTS)
+
+        top_players_str = []
+        for player in top_players:
+            top_players_str.append(str(player))
+        print(top_players_str)
+
+        top_list_to_test = [
+            "Gretzky EDM 35 + 89 = 124",
+            "Yzerman DET 42 + 56 = 98",
         ]
 
         self.assertEqual(top_players_str, top_list_to_test)
