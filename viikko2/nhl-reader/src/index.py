@@ -12,9 +12,14 @@ def main():
         player = Player(player_dict)
         players.append(player)
 
+    def return_points(player):
+        return player.assists + player.goals
+
+    sorted_players = sorted(players, key=return_points, reverse=True)
+
     print("Players from FIN \n")
 
-    for player in players:
+    for player in sorted_players:
         if player.nationality == "FIN":
             print(player)
 
