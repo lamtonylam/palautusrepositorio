@@ -1,7 +1,5 @@
 from entities.user import User
-from repositories.user_repository import (
-    user_repository as default_user_repository
-)
+from repositories.user_repository import user_repository as default_user_repository
 
 
 class UserInputError(Exception):
@@ -30,9 +28,7 @@ class UserService:
     def create_user(self, username, password, password_confirmation):
         self.validate(username, password, password_confirmation)
 
-        user = self._user_repository.create(
-            User(username, password)
-        )
+        user = self._user_repository.create(User(username, password))
 
         return user
 
@@ -40,7 +36,20 @@ class UserService:
         if not username or not password:
             raise UserInputError("Username and password are required")
 
-        # toteuta loput tarkastukset tänne ja nosta virhe virhetilanteissa
+        if not username.isalpha():
+            raise UserInputError("Username must only contain A-Z chars")
+
+        if len(username) < 3:
+            raise UserInputError("Username is too short, must be at least 3 chars")
+
+        if password.isalpha():
+            raise UserInputError("Password must contain other chars than A-Z")
+
+        if len(password) < 8:
+            raise UserInputError("Password is too short, it must be at least 8 chars")
+
+        if password != password_confirmation:
+            raise UserInputError("Passwords do not match")
 
 
 user_service = UserService()
