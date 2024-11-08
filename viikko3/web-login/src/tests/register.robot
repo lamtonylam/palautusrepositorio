@@ -52,6 +52,23 @@ Register With Username That Is Already In Use
     Click Register Button
     Page Should Contain    User with username kalle already exists
 
+Login After Successful Registration
+    Register With Username And Password    tomppa    tomppa123
+    Logout
+    Set Username    tomppa
+    Set Password    tomppa123
+    Click Login Button
+    Page Should Contain    Ohtu Application main page
+
+Login After Failed Registration
+    Register With Username And Password    tomppa    t
+    Click Link    /login
+    Set Username    tomppa
+    Set Password    t
+    Click Login Button
+    Page Should Contain    Invalid username or password
+    Title Should Be    Login
+
 
 *** Keywords ***
 Set Username
@@ -69,7 +86,23 @@ Set Password Confirmation
 Click Register Button
     Click Button    locator=Register
 
+Click Login Button
+    Click Button    Login
+
 Reset Application Create User And Go To Register Page
     Reset Application
     Create User    kalle    kalle123
     Go To Register Page
+
+Logout
+    Click Link    ohtu
+    Page Should Contain    Ohtu Application main page
+    Click Button    Logout
+    Page Should Contain    Login
+
+Register With Username And Password
+    [Arguments]    ${username}    ${password}
+    Set Username    ${username}
+    Set Password    ${password}
+    Set Password Confirmation    ${password}
+    Click Button    locator=Register
