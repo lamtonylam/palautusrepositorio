@@ -8,6 +8,7 @@ class Komento(Enum):
     NOLLAUS = 3
     KUMOA = 4
 
+
 # suorita komento, koska käyttöliittymä luokassa on komento_olio.suorita()
 class Summa:
     def __init__(self, sovelluslogiikka, lue_syote):
@@ -38,16 +39,30 @@ class Nollaus:
         self._sovelluslogiikka.nollaa()
 
 
+class Kumoa:
+    def __init__(self, sovelluslogiikka):
+        self._sovelluslogiikka = sovelluslogiikka
+        self._edellinen_arvo = 0
+
+    def aseta_edellinen_arvo(self, arvo):
+        self._edellinen_arvo = arvo
+
+    def suorita(self):
+        self._sovelluslogiikka.aseta_arvo(self._edellinen_arvo)
+
+
 class Kayttoliittyma:
     def __init__(self, sovelluslogiikka, root):
         self._sovelluslogiikka = sovelluslogiikka
         self._root = root
+        self._edellinen_arvo = None
+        self._kumoa = Kumoa(sovelluslogiikka)
 
         self._komennot = {
             Komento.SUMMA: Summa(sovelluslogiikka, self._lue_syote),
             Komento.EROTUS: Erotus(sovelluslogiikka, self._lue_syote),
             Komento.NOLLAUS: Nollaus(sovelluslogiikka, self._lue_syote),
-            # Komento.KUMOA: Kumoa(sovelluslogiikka, self._lue_syote) # ei ehkä tarvita täällä...
+            Komento.KUMOA: self._kumoa,
         }
 
     def _lue_syote(self):
@@ -98,6 +113,13 @@ class Kayttoliittyma:
         self._kumoa_painike.grid(row=2, column=3)
 
     def _suorita_komento(self, komento):
+        # muistetaan nykyinen arvo, ennen kuin suoritetaan laskutoimituksia
+        self._edellinen_arvo = self._sovelluslogiikka.arvo()
+
+        # jos komento ei oo kumoa, asetetaan kumoa luokan edelliseksi arvoksi ylhäällä oleva.
+        if komento != Komento.KUMOA:
+            self._kumoa.aseta_edellinen_arvo(self._edellinen_arvo)
+
         komento_olio = self._komennot[komento]
         komento_olio.suorita()
         self._kumoa_painike["state"] = constants.NORMAL
